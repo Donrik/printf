@@ -1,36 +1,34 @@
 #include "main.h"
 
 /**
- * _printf - produces output according to a format
- * @format: format specifier character string
- *
- * Return: Number of characters printed (excluding nullbyte).
+ * _printf - implementation of the inbuilt printf
+ * @format: the format specifier
+ * Return: the formated string
  */
+
 int _printf(const char *format, ...)
 {
-	int print_count = 0;
-	va_list list;
+	int printed = 0;
 
-	ops_t func_list[] = {
-		{'c', print_char},
-		{'s', print_str},
-		{'%', print_percent},
-		{'i', print_integer},
-		{'d', print_decimal},
-		{'b', print_binary},
-		{'u', unsigned_integer},
-		{'o', print_octal},
-		{'x', print_hex},
-		{'X', print_heX}
-	};
+	va_list args;
 
-	if (format == NULL)
-		return (-1);
+	va_start(args, format);
 
-	va_start(list, format);
-
-	print_count = process(format, func_list, list);
-
-	va_end(list);
-	return (print_count);
+	while (*format != '\0')
+	{
+		if (*format == '%')
+		{
+			format++;
+			printed = selector(format, args, printed);
+			format++;
+		}
+		else
+		{
+			_putchar(*format);
+			printed++;
+			format++;
+		}
+	}
+	va_end(args);
+	return (printed);
 }
